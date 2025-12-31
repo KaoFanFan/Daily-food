@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>今天吃什麼 🍛</title>
+    <title>今天吃什麼 🍛 (距離強化版)</title>
     <style>
         :root {
             --bg-color: #FFF9EB;
@@ -23,81 +23,96 @@
 
         .card {
             background: var(--card-bg);
-            width: 85%; max-width: 360px;
-            padding: 40px 25px; border-radius: 40px;
+            width: 85%; max-width: 380px;
+            padding: 35px 25px; border-radius: 40px;
             box-shadow: 0 10px 0px #F0E5D0;
             text-align: center; border: 3px solid #5D4037;
         }
 
-        .icon-header { font-size: 60px; margin-bottom: 10px; animation: float 3s infinite ease-in-out; }
-        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+        .icon-header { font-size: 55px; margin-bottom: 10px; animation: float 3s infinite ease-in-out; }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-        h1 { font-size: 26px; margin: 0 0 5px; color: #5D4037; font-weight: 900; }
-        .tag { font-size: 13px; color: #9E7E6B; background: #FDF1D6; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 30px; }
+        h1 { font-size: 24px; margin: 0 0 5px; color: #5D4037; font-weight: 900; }
+        .tag { font-size: 12px; color: #9E7E6B; background: #FDF1D6; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 25px; }
 
-        .form-group { text-align: left; margin-bottom: 18px; }
-        label { font-size: 15px; font-weight: bold; margin-bottom: 8px; display: block; margin-left: 5px; }
+        .form-grid { text-align: left; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        .form-group { text-align: left; margin-bottom: 15px; }
+        .full-width { grid-column: span 2; }
+        
+        label { font-size: 14px; font-weight: bold; margin-bottom: 6px; display: block; margin-left: 5px; }
         
         select {
-            width: 100%; padding: 14px; border-radius: 20px;
+            width: 100%; padding: 12px; border-radius: 18px;
             border: 2px solid #5D4037; background: #fff;
-            font-size: 16px; color: #5D4037; outline: none;
+            font-size: 15px; color: #5D4037; outline: none;
             appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%235D4037' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat; background-position: right 15px center; background-size: 15px;
+            background-repeat: no-repeat; background-position: right 12px center; background-size: 12px;
         }
 
         .btn {
-            width: 100%; padding: 20px; border-radius: 25px;
-            border: 2px solid #5D4037; font-size: 20px; font-weight: 900;
-            cursor: pointer; margin-top: 15px; background: var(--sub-accent);
+            width: 100%; padding: 18px; border-radius: 25px;
+            border: 2px solid #5D4037; font-size: 18px; font-weight: 900;
+            cursor: pointer; margin-top: 10px; background: var(--sub-accent);
             color: #5D4037; box-shadow: 0 6px 0 #5D4037; transition: 0.1s;
         }
 
         .btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #5D4037; }
 
-        #loader { display: none; margin-top: 15px; font-size: 14px; color: var(--accent); font-weight: bold; }
+        #loader { display: none; margin-top: 15px; font-size: 13px; color: var(--accent); font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <div class="icon-header">🚀</div>
-    <h1>高隨機抽籤模式</h1>
-    <div class="tag">📍 定位搜尋 + 隨機擾動因子</div>
+    <div class="icon-header">👟</div>
+    <h1>美食冒險家</h1>
+    <div class="tag">📍 精準定位 + 自訂距離 + 高隨機</div>
 
-    <div class="form-group">
-        <label>😋 想吃哪一類？</label>
-        <select id="style">
-            <option value="台式料理">🇹🇼 台式古早味</option>
-            <option value="日式料理">🇯🇵 日式好滋味</option>
-            <option value="中式料理">🥢 中式大飽口福</option>
-            <option value="便利商店">🏪 超商/輕食</option>
-            <option value="美式餐廳">🍔 美式豪邁吃</option>
-            <option value="韓式料理">🇰🇷 韓式歐巴風</option>
-        </select>
-    </div>
+    <div class="form-grid">
+        <div class="form-group">
+            <label>🏃 想要多遠？</label>
+            <select id="distance">
+                <option value="1000">🚶 1km 內 (走路)</option>
+                <option value="3000">🛵 3km 內</option>
+                <option value="5000">🚗 5km 內</option>
+                <option value="10000">🏙️ 10km 內</option>
+            </select>
+        </div>
 
-    <div class="form-group">
-        <label>💰 預算多少？</label>
-        <select id="price">
-            <option value="便宜">200 以內 (小資)</option>
-            <option value="平價">201 - 400 (奢華)</option>
-            <option value="精緻">400 以上 (犒賞)</option>
-        </select>
+        <div class="form-group">
+            <label>💰 預算</label>
+            <select id="price">
+                <option value="便宜">200內</option>
+                <option value="平價">400內</option>
+                <option value="精緻">400↑</option>
+            </select>
+        </div>
+
+        <div class="form-group full-width">
+            <label>😋 想吃哪一類？</label>
+            <select id="style">
+                <option value="台式料理">🇹🇼 台式古早味</option>
+                <option value="日式料理">🇯🇵 日式好滋味</option>
+                <option value="中式料理">🥢 中式大飽口福</option>
+                <option value="便利商店">🏪 超商/輕食</option>
+                <option value="美式餐廳">🍔 美式豪邁吃</option>
+                <option value="韓式料理">🇰🇷 韓式歐巴風</option>
+            </select>
+        </div>
     </div>
 
     <div class="form-group">
         <label>⏰ 用餐時段</label>
         <select id="time">
-            <option value="早餐">早餐時光</option>
-            <option value="中餐">午餐午休</option>
-            <option value="晚餐">晚餐放鬆</option>
+            <option value="早餐">早餐</option>
+            <option value="中餐">午餐</option>
+            <option value="晚餐">晚餐</option>
         </select>
     </div>
 
-    <button class="btn" onclick="searchNow()">隨機大冒險！✨</button>
-    <div id="loader">🎲 正在打亂結果中...</div>
+    <button class="btn" onclick="searchNow()">開始隨機搜尋！✨</button>
+    <div id="loader">🎲 正在運算最佳隨機路徑...</div>
 </div>
 
 <script>
@@ -115,34 +130,31 @@
             const lat = pos.coords.latitude;
             const lng = pos.coords.longitude;
             
+            const dist = document.getElementById('distance').value;
             const style = document.getElementById('style').value;
             const price = document.getElementById('price').value;
             const time = document.getElementById('time').value;
 
-            // --- 高隨機核心：隨機標籤庫 ---
-            const magicSpells = [
-                "推薦", "隱藏版", "人氣", "冷門", "新開幕", 
-                "驚喜", "巷弄美食", "必吃", "在地人", "特色", 
-                "高CP值", "安靜", "排隊", "平價熱門"
-            ];
-            const spell = magicSpells[Math.floor(Math.random() * magicSpells.length)];
+            // 高隨機咒語
+            const magicSpells = ["推薦", "隱藏版", "人氣", "新開幕", "驚喜", "巷弄", "特色", "評價最高"];
+            const spell = magicSpells[Math.floor(Math.random() * magicSpells.magicSpells.length)];
             
-            // --- 高隨機核心：隨機地點擾動 ---
-            // 在座標上加上微小的隨機偏移 (約 50-100公尺)，這會強迫 Google Maps 重算搜尋
-            const offsetLat = (Math.random() - 0.5) * 0.002;
-            const offsetLng = (Math.random() - 0.5) * 0.002;
-            const newLat = lat + offsetLat;
-            const newLng = lng + offsetLng;
+            // 根據距離設定地圖縮放層級 (Zoom Level)
+            // 1km 約 z16, 3km 約 z14, 5km 約 z13, 10km 約 z12
+            let zoom = 16;
+            if(dist == "3000") zoom = 14;
+            if(dist == "5000") zoom = 13;
+            if(dist == "10000") zoom = 12;
 
-            // 組合搜尋詞，加入隨機咒語
-            const queryText = `${spell} ${style} ${price} ${time}`;
+            // 組合搜尋關鍵字，明確告訴 Google 距離範圍
+            const queryText = `${spell} ${style} ${price} ${time} 附近 ${parseInt(dist)/1000}公里`;
             const query = encodeURIComponent(queryText);
             
-            // 加入隨機時間戳記（防止快取）
+            // 加入時間戳記防止快取
             const t = new Date().getTime();
             
-            // 使用 Google Maps 搜尋連結
-            const mapUrl = `https://www.google.com/maps/search/${query}/@${newLat},${newLng},16z?t=${t}`;
+            // 最終搜尋 URL
+            const mapUrl = `https://www.google.com/maps/search/${query}/@${lat},${lng},${zoom}z?t=${t}`;
 
             setTimeout(() => {
                 loader.style.display = 'none';
@@ -150,7 +162,7 @@
             }, 600);
         }, (error) => {
             loader.style.display = 'none';
-            alert("請開啟定位權限，才能找到附近的餐廳喔！");
+            alert("請開啟定位權限。");
         }, { enableHighAccuracy: true });
     }
 </script>
