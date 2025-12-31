@@ -49,32 +49,29 @@
             background-repeat: no-repeat; background-position: right 10px center; background-size: 12px;
         }
 
-        /* 提示文字樣式 */
+        /* 強化後的提示文字樣式 */
         .notice-text {
             font-size: 11px;
             color: #A68A7C;
-            margin-top: -8px;
+            margin-top: -5px;
             margin-bottom: 15px;
             text-align: left;
-            padding: 0 8px;
-            line-height: 1.4;
+            padding: 8px 12px;
+            line-height: 1.5;
+            background: #FDF1D6;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
         }
 
         .switch-group {
             display: flex; justify-content: space-between; align-items: center;
-            background: #FDF1D6; padding: 10px 15px; border-radius: 20px; margin-bottom: 15px;
+            background: #fff; padding: 10px 15px; border-radius: 20px; margin-bottom: 15px;
             border: 2px solid #5D4037;
         }
         .switch { position: relative; display: inline-block; width: 46px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider {
-            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #ccc; transition: .4s; border-radius: 24px;
-        }
-        .slider:before {
-            position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px;
-            background-color: white; transition: .4s; border-radius: 50%;
-        }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: var(--accent); }
         input:checked + .slider:before { transform: translateX(22px); }
 
@@ -94,7 +91,7 @@
 <body>
 
 <div class="card">
-    <div class="icon-header">🍲</div>
+    <div class="icon-header">🥘</div>
     <h1>美食探險隊</h1>
     <div class="tag">📍 秒速定位 × 營業過濾 × 高隨機</div>
 
@@ -118,7 +115,7 @@
     </div>
     
     <div class="notice-text">
-        ⚠️ 備註：Google 可能會自動擴大距離半徑 1.5~2 公里以挑選更合適的商家。
+        💡 Google 可能會自動擴大半徑 1.5~2 公里以挑選合適店家。當條件符合者太少時，系統會展示非營業中但「高評價」的店家作為建議。
     </div>
 
     <div class="form-grid">
@@ -155,7 +152,7 @@
     
     <div id="loader-container">
         <div class="progress-bar"><div id="p-fill" class="progress-fill"></div></div>
-        <p style="font-size: 11px; margin-top: 5px; color: var(--accent); font-weight: bold;">正在重新排列搜尋組合...</p>
+        <p style="font-size: 11px; margin-top: 5px; color: var(--accent); font-weight: bold;">正在同步營業時間與定位...</p>
     </div>
 </div>
 
@@ -182,18 +179,24 @@
             const time = document.getElementById('time').value;
             const isOpen = document.getElementById('openNow').checked;
 
-            const spells = ["推薦", "隱藏版", "高評價", "巷弄", "驚喜"];
+            const spells = ["推薦", "隱藏版", "高評價", "驚喜"];
             const spell = spells[Math.floor(Math.random() * spells.length)];
             
             let zoom = dist == "1000" ? 16 : (dist == "3000" ? 14 : 13);
+            
+            // 強化營業過濾關鍵字
             let queryText = `${spell} ${style} ${price} ${time}`;
-            if(isOpen) queryText += " 營業中";
+            if(isOpen) {
+                queryText += " 營業中 現在有開 正在營業 open now";
+            }
             
             const query = encodeURIComponent(queryText);
-            const openParam = isOpen ? "&lrd=0x0:0x0,1" : "";
+            
+            // Google Maps 營業過濾進階參數
+            const openFilter = isOpen ? "&tbs=lrf:!2m1!1e2!2m1!1e3!3sIAE,lf:1,lf_ui:9" : "";
             const t = new Date().getTime();
             
-            const mapUrl = `https://www.google.com/maps/search/${query}/@${lat},${lng},${zoom}z?t=${t}${openParam}`;
+            const mapUrl = `https://www.google.com/maps/search/${query}/@${lat},${lng},${zoom}z?t=${t}${openFilter}`;
 
             setTimeout(() => {
                 fill.style.width = '100%';
@@ -205,7 +208,7 @@
             
         }, (error) => {
             const style = document.getElementById('style').value;
-            window.open(`https://www.google.com/maps/search/${encodeURIComponent(style + ' 附近 營業中')}`);
+            window.open(`https://www.google.com/maps/search/${encodeURIComponent(style + ' 營業中')}`);
             btn.disabled = false;
             loader.style.display = 'none';
         }, options);
