@@ -35,7 +35,7 @@
         h1 { font-size: 26px; margin: 0 0 5px; color: #5D4037; font-weight: 900; }
         .tag { font-size: 13px; color: #9E7E6B; background: #FDF1D6; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 30px; }
 
-        .form-group { text-align: left; margin-bottom: 20px; }
+        .form-group { text-align: left; margin-bottom: 18px; }
         label { font-size: 15px; font-weight: bold; margin-bottom: 8px; display: block; margin-left: 5px; }
         
         select {
@@ -56,25 +56,34 @@
 
         .btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #5D4037; }
 
-        .loading-tip { display: none; margin-top: 15px; font-size: 14px; color: var(--accent); font-weight: bold; }
+        #loader { display: none; margin-top: 15px; font-size: 14px; color: var(--accent); font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <div class="icon-header">🎲</div>
-    <h1>決定好了嗎？</h1>
-    <div class="tag">📍 自動定位附近 1km 搜尋</div>
+    <div class="icon-header">🚀</div>
+    <h1>高隨機抽籤模式</h1>
+    <div class="tag">📍 定位搜尋 + 隨機擾動因子</div>
 
     <div class="form-group">
         <label>😋 想吃哪一類？</label>
         <select id="style">
-            <option value="台式料理">台式古早味</option>
-            <option value="日式料理">日式好滋味</option>
-            <option value="中式料理">中式大飽口福</option>
-            <option value="便利商店">超商/輕食</option>
-            <option value="美式餐廳">美式豪邁吃</option>
-            <option value="韓式料理">韓式歐巴風</option>
+            <option value="台式料理">🇹🇼 台式古早味</option>
+            <option value="日式料理">🇯🇵 日式好滋味</option>
+            <option value="中式料理">🥢 中式大飽口福</option>
+            <option value="便利商店">🏪 超商/輕食</option>
+            <option value="美式餐廳">🍔 美式豪邁吃</option>
+            <option value="韓式料理">🇰🇷 韓式歐巴風</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>💰 預算多少？</label>
+        <select id="price">
+            <option value="便宜">200 以內 (小資)</option>
+            <option value="平價">201 - 400 (奢華)</option>
+            <option value="精緻">400 以上 (犒賞)</option>
         </select>
     </div>
 
@@ -82,13 +91,13 @@
         <label>⏰ 用餐時段</label>
         <select id="time">
             <option value="早餐">早餐時光</option>
-            <option value="中餐">中午休息</option>
+            <option value="中餐">午餐午休</option>
             <option value="晚餐">晚餐放鬆</option>
         </select>
     </div>
 
-    <button class="btn" onclick="searchNow()">幫我找一間！✨</button>
-    <div id="loader" class="loading-tip">正在連動地圖...</div>
+    <button class="btn" onclick="searchNow()">隨機大冒險！✨</button>
+    <div id="loader">🎲 正在打亂結果中...</div>
 </div>
 
 <script>
@@ -97,7 +106,7 @@
         loader.style.display = 'block';
 
         if (!navigator.geolocation) {
-            alert("瀏覽器不支援定位功能。");
+            alert("您的瀏覽器不支援定位功能。");
             loader.style.display = 'none';
             return;
         }
@@ -107,26 +116,42 @@
             const lng = pos.coords.longitude;
             
             const style = document.getElementById('style').value;
+            const price = document.getElementById('price').value;
             const time = document.getElementById('time').value;
 
-            // 隨機咒語：增加搜尋結果的多樣性
-            const randomSpells = ["推薦", "人氣", "評價高", "驚喜", "在地人推薦", "隱藏版"];
-            const spell = randomSpells[Math.floor(Math.random() * randomSpells.length)];
+            // --- 高隨機核心：隨機標籤庫 ---
+            const magicSpells = [
+                "推薦", "隱藏版", "人氣", "冷門", "新開幕", 
+                "驚喜", "巷弄美食", "必吃", "在地人", "特色", 
+                "高CP值", "安靜", "排隊", "平價熱門"
+            ];
+            const spell = magicSpells[Math.floor(Math.random() * magicSpells.length)];
             
-            // 組合搜尋詞
-            const query = encodeURIComponent(`${spell} ${style} ${time}`);
+            // --- 高隨機核心：隨機地點擾動 ---
+            // 在座標上加上微小的隨機偏移 (約 50-100公尺)，這會強迫 Google Maps 重算搜尋
+            const offsetLat = (Math.random() - 0.5) * 0.002;
+            const offsetLng = (Math.random() - 0.5) * 0.002;
+            const newLat = lat + offsetLat;
+            const newLng = lng + offsetLng;
+
+            // 組合搜尋詞，加入隨機咒語
+            const queryText = `${spell} ${style} ${price} ${time}`;
+            const query = encodeURIComponent(queryText);
             
-            // 使用 Google Maps 官方搜尋模式，這會直接在地圖上顯示多個結果供挑選
-            const mapUrl = `https://www.google.com/maps/search/${query}/@${lat},${lng},16z`;
+            // 加入隨機時間戳記（防止快取）
+            const t = new Date().getTime();
+            
+            // 使用 Google Maps 搜尋連結
+            const mapUrl = `https://www.google.com/maps/search/${query}/@${newLat},${newLng},16z?t=${t}`;
 
             setTimeout(() => {
                 loader.style.display = 'none';
                 window.open(mapUrl, '_blank');
-            }, 500);
+            }, 600);
         }, (error) => {
             loader.style.display = 'none';
-            alert("請允許定位權限，才能搜尋附近的餐廳喔！");
-        });
+            alert("請開啟定位權限，才能找到附近的餐廳喔！");
+        }, { enableHighAccuracy: true });
     }
 </script>
 
