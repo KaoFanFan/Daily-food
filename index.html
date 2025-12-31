@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>今天吃什麼 🍛 (急速版)</title>
+    <title>今天吃什麼 🍛 (FF)</title>
     <style>
         :root {
             --bg-color: #FFF9EB;
@@ -24,30 +24,30 @@
         .card {
             background: var(--card-bg);
             width: 85%; max-width: 380px;
-            padding: 35px 25px; border-radius: 40px;
+            padding: 30px 25px; border-radius: 40px;
             box-shadow: 0 10px 0px #F0E5D0;
             text-align: center; border: 3px solid #5D4037;
         }
 
-        .icon-header { font-size: 55px; margin-bottom: 10px; animation: float 3s infinite ease-in-out; }
+        .icon-header { font-size: 50px; margin-bottom: 5px; animation: float 3s infinite ease-in-out; }
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
         h1 { font-size: 24px; margin: 0 0 5px; color: #5D4037; font-weight: 900; }
-        .tag { font-size: 12px; color: #9E7E6B; background: #FDF1D6; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 25px; }
+        .tag { font-size: 11px; color: #9E7E6B; background: #FDF1D6; padding: 4px 10px; border-radius: 20px; display: inline-block; margin-bottom: 20px; }
 
-        .form-grid { text-align: left; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-        .form-group { text-align: left; margin-bottom: 15px; }
+        .form-grid { text-align: left; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+        .form-group { text-align: left; margin-bottom: 12px; }
         .full-width { grid-column: span 2; }
         
-        label { font-size: 14px; font-weight: bold; margin-bottom: 6px; display: block; margin-left: 5px; }
+        label { font-size: 13px; font-weight: bold; margin-bottom: 5px; display: block; margin-left: 5px; }
         
         select {
-            width: 100%; padding: 12px; border-radius: 18px;
+            width: 100%; padding: 10px; border-radius: 15px;
             border: 2px solid #5D4037; background: #fff;
             font-size: 15px; color: #5D4037; outline: none;
             appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%235D4037' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat; background-position: right 12px center; background-size: 12px;
+            background-repeat: no-repeat; background-position: right 10px center; background-size: 12px;
         }
 
         .btn {
@@ -59,19 +59,19 @@
 
         .btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #5D4037; }
 
-        /* 進度條動畫 */
+        /* 進度條 */
         #loader-container { display: none; margin-top: 20px; }
-        .progress-bar { width: 100%; height: 10px; background: #eee; border-radius: 5px; overflow: hidden; border: 1px solid #5D4037; }
-        .progress-fill { width: 0%; height: 100%; background: var(--accent); transition: width 0.3s; }
-        .loading-text { font-size: 12px; margin-top: 5px; font-weight: bold; color: var(--accent); }
+        .progress-bar { width: 100%; height: 8px; background: #eee; border-radius: 5px; overflow: hidden; border: 1px solid #5D4037; }
+        .progress-fill { width: 0%; height: 100%; background: var(--accent); transition: width 0.2s; }
+        .loading-text { font-size: 11px; margin-top: 5px; font-weight: bold; color: var(--accent); }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <div class="icon-header">⚡</div>
-    <h1>秒選美食</h1>
-    <div class="tag">📍 快速定位 + 智慧距離控制</div>
+    <div class="icon-header">🥘</div>
+    <h1>美食大冒險</h1>
+    <div class="tag">📍 秒速定位 × 多重因子 × 高隨機</div>
 
     <div class="form-grid">
         <div class="form-group">
@@ -88,26 +88,36 @@
             <select id="price">
                 <option value="便宜">200內</option>
                 <option value="平價">400內</option>
-                <option value="精緻">400↑</option>
+                <option value="奢華">400↑</option>
             </select>
         </div>
         <div class="form-group full-width">
-            <label>😋 風格</label>
+            <label>😋 想吃什麼？</label>
             <select id="style">
-                <option value="台式料理">🇹🇼 台式</option>
-                <option value="日式料理">🇯🇵 日式</option>
-                <option value="中式料理">🥢 中式</option>
-                <option value="美式餐廳">🍔 美式</option>
-                <option value="韓式料理">🇰🇷 韓式</option>
+                <option value="台式料理">🇹🇼 台式古早味</option>
+                <option value="日式料理">🇯🇵 日式好滋味</option>
+                <option value="中式料理">🥢 中式大飽口福</option>
+                <option value="美式餐廳">🍔 美式豪邁吃</option>
+                <option value="韓式料理">🇰🇷 韓式歐巴風</option>
+                <option value="義式料理">🍝 義式浪漫感</option>
+                <option value="便利商店">🏪 超商/輕食</option>
+            </select>
+        </div>
+        <div class="form-group full-width">
+            <label>⏰ 用餐時段</label>
+            <select id="time">
+                <option value="早餐">早餐時光</option>
+                <option value="中餐">午餐午休</option>
+                <option value="晚餐">晚餐放鬆</option>
             </select>
         </div>
     </div>
 
-    <button id="searchBtn" class="btn" onclick="searchNow()">立即抽籤！✨</button>
+    <button id="searchBtn" class="btn" onclick="searchNow()">幫我挑一個！✨</button>
     
     <div id="loader-container">
         <div class="progress-bar"><div id="p-fill" class="progress-fill"></div></div>
-        <div class="loading-text">正在捕捉 GPS 訊號...</div>
+        <div class="loading-text">正在捕捉時空訊號...</div>
     </div>
 </div>
 
@@ -121,31 +131,43 @@
         loader.style.display = 'block';
         fill.style.width = '30%';
 
+        // 急速定位設定
         const options = {
-            enableHighAccuracy: false, // 改為 false 獲取速度會大幅提升
-            timeout: 3000,             // 3秒內沒回應就跳出
-            maximumAge: 60000          // 允許使用 1 分鐘內的舊快取定位
+            enableHighAccuracy: false, // 關閉高精準以換取秒速回應
+            timeout: 2500,             // 只等 2.5 秒
+            maximumAge: 60000          // 優先使用一分鐘內的定位快取
         };
 
         navigator.geolocation.getCurrentPosition((pos) => {
-            fill.style.width = '80%';
+            fill.style.width = '70%';
             const lat = pos.coords.latitude;
             const lng = pos.coords.longitude;
             
             const dist = document.getElementById('distance').value;
             const style = document.getElementById('style').value;
             const price = document.getElementById('price').value;
+            const time = document.getElementById('time').value;
 
-            // 隨機關鍵字增加隨機性
-            const spells = ["推薦", "隱藏版", "人氣", "高評價", "特色"];
-            const spell = spells[Math.floor(Math.random() * spells.length)];
+            // 高隨機咒語：打亂 Google 的固定推薦
+            const magicSpells = ["推薦", "隱藏版", "人氣", "高評價", "特色", "巷弄", "新發現", "必吃"];
+            const spell = magicSpells[Math.floor(Math.random() * magicSpells.length)];
             
+            // 加入座標微隨機擾動 (約 50 公尺範圍)
+            const rndLat = lat + (Math.random() - 0.5) * 0.001;
+            const rndLng = lng + (Math.random() - 0.5) * 0.001;
+
+            // 縮放層級控制
             let zoom = 16;
             if(dist == "3000") zoom = 14;
             if(dist >= "5000") zoom = 13;
 
-            const query = encodeURIComponent(`${spell} ${style} ${price} 附近`);
-            const mapUrl = `https://www.google.com/maps/search/${query}/@${lat},${lng},${zoom}z`;
+            // 組合關鍵字
+            const queryText = `${spell} ${style} ${price} ${time} 附近 ${parseInt(dist)/1000}km`;
+            const query = encodeURIComponent(queryText);
+            
+            // 加入時間戳記防止連結被瀏覽器記住
+            const t = new Date().getTime();
+            const mapUrl = `https://www.google.com/maps/search/${query}/@${rndLat},${rndLng},${zoom}z?t=${t}`;
 
             setTimeout(() => {
                 fill.style.width = '100%';
@@ -156,9 +178,10 @@
             }, 300);
             
         }, (error) => {
-            // 定位失敗則直接使用預設關鍵字搜尋，不讓使用者等
+            // 如果定位超時或失敗，直接搜尋條件區域
             const style = document.getElementById('style').value;
-            window.open(`https://www.google.com/maps/search/${encodeURIComponent(style + ' 附近')}`, '_blank');
+            const time = document.getElementById('time').value;
+            window.open(`https://www.google.com/maps/search/${encodeURIComponent(style + ' ' + time + ' 附近')}`, '_blank');
             btn.disabled = false;
             loader.style.display = 'none';
         }, options);
