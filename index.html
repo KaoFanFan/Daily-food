@@ -5,13 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>今天吃什麼 🍛</title>
     <style>
-        /* 可愛感核心設定 */
         :root {
             --bg-color: #FFF9EB;
             --card-bg: #FFFFFF;
-            --accent: #FF8D8D; /* 甜心粉紅 */
-            --sub-accent: #FFD966; /* 活力黃 */
-            --map-blue: #A0C4FF; /* 柔粉藍 */
+            --accent: #FF8D8D;
+            --sub-accent: #FFD966;
+            --map-blue: #A0C4FF;
             --text-color: #5D4037;
         }
 
@@ -24,32 +23,144 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            overflow-x: hidden;
         }
 
-        /* 像雲朵一樣圓潤的卡片 */
         .card {
             background: var(--card-bg);
             width: 85%;
             max-width: 360px;
             padding: 30px;
             border-radius: 40px;
-            box-shadow: 0 15px 0px #F0E5D0; /* 立體感底部陰影 */
+            box-shadow: 0 10px 0px #F0E5D0;
             text-align: center;
-            position: relative;
             border: 3px solid #5D4037;
         }
 
-        .icon-header {
-            font-size: 60px;
-            margin-bottom: 10px;
-            animation: float 3s ease-in-out infinite;
+        .icon-header { font-size: 60px; margin-bottom: 10px; }
+        h1 { font-size: 24px; margin: 0 0 5px; color: #5D4037; }
+        .location { font-size: 13px; color: #9E7E6B; margin-bottom: 20px; font-weight: bold; }
+
+        .form-group { text-align: left; margin-bottom: 15px; }
+        label { font-size: 14px; font-weight: bold; margin-bottom: 5px; display: block; }
+        select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 15px;
+            border: 2px solid #5D4037;
+            background: #fff;
+            font-size: 16px;
+            outline: none;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border-radius: 20px;
+            border: 2px solid #5D4037;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            display: block;
+            text-decoration: none;
+            box-sizing: border-box;
+            transition: 0.2s;
         }
 
-        h1 { font-size: 26px; margin: 0 0 5px; color: #5D4037; }
-        .location { font-size: 14px; color: #9E7E6B; margin-bottom: 25
+        .btn-main { background: var(--sub-accent); color: #5D4037; box-shadow: 0 4px 0 #5D4037; }
+        .btn-main:active { transform: translateY(2px); box-shadow: 0 2px 0 #5D4037; }
+
+        .loading-text { display: none; margin-top: 15px; font-size: 14px; color: var(--accent); font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="icon-header">🍴</div>
+    <h1>全台隨機吃！</h1>
+    <div class="location">📍 以您的「目前位置」搜尋</div>
+
+    <div class="form-group">
+        <label>🍕 想吃風格</label>
+        <select id="style">
+            <option value="台式餐廳">台式料理</option>
+            <option value="日式料理">日式料理</option>
+            <option value="中式餐廳">中式料理</option>
+            <option value="便利商店">超商/輕食</option>
+            <option value="美式餐廳">美式漢堡</option>
+            <option value="韓式料理">韓式料理</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>💸 價格條件</label>
+        <select id="price">
+            <option value="便宜">200 以內</option>
+            <option value="平價">201-400</option>
+            <option value="精緻">400 以上</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>⏰ 時段</label>
+        <select id="time">
+            <option value="早餐">早餐</option>
+            <option value="中餐">中餐</option>
+            <option value="晚餐">晚餐</option>
+        </select>
+    </div>
+
+    <button class="btn btn-main" onclick="startRandomSearch()">
+        立刻搜尋附近餐廳 ✨
+    </button>
+    
+    <div id="loading" class="loading-text">正在讀取定位中...</div>
+</div>
+
+<script>
+    function startRandomSearch() {
+        const loading = document.getElementById('loading');
+        loading.style.display = 'block';
+
+        // 檢查瀏覽器是否支援定位
+        if (!navigator.geolocation) {
+            alert("抱歉，您的瀏覽器不支援定位功能。");
+            loading.style.display = 'none';
+            return;
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                
+                // 獲取使用者選取的條件
+                const style = document.getElementById('style').value;
+                const price = document.getElementById('price').value;
+                const time = document.getElementById('time').value;
+
+                // 為了增加「隨機感」，我們在搜尋關鍵字中加入一個亂數描述
+                // 例如「推薦」、「評價高」、「驚喜」等隨機詞彙
+                const randomAds = ["", "推薦", "高評分", "人氣", "附近"];
+                const ad = randomAds[Math.floor(Math.random() * randomAds.length)];
+                
+                const query = `${ad} ${style} ${price} ${time}`;
+                
+                // 組合 Google Maps URL (使用目前座標與 1km 左右的範圍搜尋)
+                // 這裡直接使用 Google Maps 網頁搜尋，它會根據當前座標自動過濾
+                const mapUrl = `https://maps.google.com/?cid=5559279461782705747&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQ{encodeURIComponent(query)}/@${lat},${lng},15z`;
+
+                loading.style.display = 'none';
+                window.open(mapUrl, '_blank');
+            },
+            (error) => {
+                loading.style.display = 'none';
+                alert("無法取得定位，請確保已開啟 GPS 並允許網頁存取權限。");
+            },
+            { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+        );
+    }
+</script>
+
+</body>
+</html>
