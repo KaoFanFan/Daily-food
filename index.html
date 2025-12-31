@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>今天吃什麼 - 東興路美食</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f4f4f9; }
+        .card { background: white; padding: 2rem; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 90%; max-width: 400px; }
+        h1 { color: #ea4335; text-align: center; margin-bottom: 1.5rem; }
+        .form-group { margin-bottom: 1.2rem; }
+        label { display: block; margin-bottom: 0.5rem; font-weight: bold; color: #555; }
+        select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; }
+        button { width: 100%; padding: 12px; background-color: #4285f4; color: white; border: none; border-radius: 8px; font-size: 1.1rem; cursor: pointer; transition: background 0.3s; }
+        button:hover { background-color: #357ae8; }
+        .info { font-size: 0.8rem; color: #888; text-align: center; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>今天吃什麼？</h1>
+    <p style="text-align: center; color: #666;">目標：東興路8號周邊 1km</p>
+    
+    <div class="form-group">
+        <label>想吃哪種風格？</label>
+        <select id="style">
+            <option value="台式餐廳">台式</option>
+            <option value="日式料理">日式</option>
+            <option value="中式餐廳">中式</option>
+            <option value="便利商店">超商</option>
+            <option value="美式餐廳">美式</option>
+            <option value="韓式料理">韓式</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>價位預算</label>
+        <select id="price">
+            <option value="平價">200 以內</option>
+            <option value="中價位">201 - 400</option>
+            <option value="高價位">400 以上</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>用餐時段</label>
+        <select id="time">
+            <option value="早餐">早餐</option>
+            <option value="中餐">中餐</option>
+            <option value="晚餐">晚餐</option>
+        </select>
+    </div>
+
+    <button onclick="searchFood()">開始搜尋</button>
+    <p class="info">點擊後將自動跳轉至 Google Maps</p>
+</div>
+
+<script>
+    function searchFood() {
+        const style = document.getElementById('style').value;
+        const price = document.getElementById('price').value;
+        const time = document.getElementById('time').value;
+        
+        // 核心邏輯：將地址與條件組合成搜尋字串
+        const baseAddress = "台北市松山區東興路8號";
+        const query = `${style} ${price} ${time} 餐廳`;
+        
+        // 使用 Google Maps Search 連結
+        // 參數說明：
+        // q: 關鍵字與地址
+        // 1km 範圍：Google Maps 會根據地址自動聚焦，若要嚴格限制 1km，API 較佳，
+        // 但一般 URL 搜尋會優先顯示「最靠近」該地址的結果。
+        const url = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query + ' 在 ' + baseAddress)}`;
+        
+        window.open(url, '_blank');
+    }
+</script>
+
+</body>
+</html>
