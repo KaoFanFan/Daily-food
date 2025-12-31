@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>今天吃什麼 🍛 (距離強化版)</title>
+    <title>今天吃什麼 🍛 (急速版)</title>
     <style>
         :root {
             --bg-color: #FFF9EB;
@@ -59,27 +59,30 @@
 
         .btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #5D4037; }
 
-        #loader { display: none; margin-top: 15px; font-size: 13px; color: var(--accent); font-weight: bold; }
+        /* 進度條動畫 */
+        #loader-container { display: none; margin-top: 20px; }
+        .progress-bar { width: 100%; height: 10px; background: #eee; border-radius: 5px; overflow: hidden; border: 1px solid #5D4037; }
+        .progress-fill { width: 0%; height: 100%; background: var(--accent); transition: width 0.3s; }
+        .loading-text { font-size: 12px; margin-top: 5px; font-weight: bold; color: var(--accent); }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <div class="icon-header">👟</div>
-    <h1>美食冒險家</h1>
-    <div class="tag">📍 精準定位 + 自訂距離 + 高隨機</div>
+    <div class="icon-header">⚡</div>
+    <h1>秒選美食</h1>
+    <div class="tag">📍 快速定位 + 智慧距離控制</div>
 
     <div class="form-grid">
         <div class="form-group">
-            <label>🏃 想要多遠？</label>
+            <label>🏃 距離</label>
             <select id="distance">
-                <option value="1000">🚶 1km 內 (走路)</option>
-                <option value="3000">🛵 3km 內</option>
-                <option value="5000">🚗 5km 內</option>
-                <option value="10000">🏙️ 10km 內</option>
+                <option value="1000">🚶 1km</option>
+                <option value="3000">🛵 3km</option>
+                <option value="5000">🚗 5km</option>
+                <option value="10000">🏙️ 10km</option>
             </select>
         </div>
-
         <div class="form-group">
             <label>💰 預算</label>
             <select id="price">
@@ -88,82 +91,77 @@
                 <option value="精緻">400↑</option>
             </select>
         </div>
-
         <div class="form-group full-width">
-            <label>😋 想吃哪一類？</label>
+            <label>😋 風格</label>
             <select id="style">
-                <option value="台式料理">🇹🇼 台式古早味</option>
-                <option value="日式料理">🇯🇵 日式好滋味</option>
-                <option value="中式料理">🥢 中式大飽口福</option>
-                <option value="便利商店">🏪 超商/輕食</option>
-                <option value="美式餐廳">🍔 美式豪邁吃</option>
-                <option value="韓式料理">🇰🇷 韓式歐巴風</option>
+                <option value="台式料理">🇹🇼 台式</option>
+                <option value="日式料理">🇯🇵 日式</option>
+                <option value="中式料理">🥢 中式</option>
+                <option value="美式餐廳">🍔 美式</option>
+                <option value="韓式料理">🇰🇷 韓式</option>
             </select>
         </div>
     </div>
 
-    <div class="form-group">
-        <label>⏰ 用餐時段</label>
-        <select id="time">
-            <option value="早餐">早餐</option>
-            <option value="中餐">午餐</option>
-            <option value="晚餐">晚餐</option>
-        </select>
+    <button id="searchBtn" class="btn" onclick="searchNow()">立即抽籤！✨</button>
+    
+    <div id="loader-container">
+        <div class="progress-bar"><div id="p-fill" class="progress-fill"></div></div>
+        <div class="loading-text">正在捕捉 GPS 訊號...</div>
     </div>
-
-    <button class="btn" onclick="searchNow()">開始隨機搜尋！✨</button>
-    <div id="loader">🎲 正在運算最佳隨機路徑...</div>
 </div>
 
 <script>
     function searchNow() {
-        const loader = document.getElementById('loader');
+        const btn = document.getElementById('searchBtn');
+        const loader = document.getElementById('loader-container');
+        const fill = document.getElementById('p-fill');
+        
+        btn.disabled = true;
         loader.style.display = 'block';
+        fill.style.width = '30%';
 
-        if (!navigator.geolocation) {
-            alert("您的瀏覽器不支援定位功能。");
-            loader.style.display = 'none';
-            return;
-        }
+        const options = {
+            enableHighAccuracy: false, // 改為 false 獲取速度會大幅提升
+            timeout: 3000,             // 3秒內沒回應就跳出
+            maximumAge: 60000          // 允許使用 1 分鐘內的舊快取定位
+        };
 
         navigator.geolocation.getCurrentPosition((pos) => {
+            fill.style.width = '80%';
             const lat = pos.coords.latitude;
             const lng = pos.coords.longitude;
             
             const dist = document.getElementById('distance').value;
             const style = document.getElementById('style').value;
             const price = document.getElementById('price').value;
-            const time = document.getElementById('time').value;
 
-            // 高隨機咒語
-            const magicSpells = ["推薦", "隱藏版", "人氣", "新開幕", "驚喜", "巷弄", "特色", "評價最高"];
-            const spell = magicSpells[Math.floor(Math.random() * magicSpells.magicSpells.length)];
+            // 隨機關鍵字增加隨機性
+            const spells = ["推薦", "隱藏版", "人氣", "高評價", "特色"];
+            const spell = spells[Math.floor(Math.random() * spells.length)];
             
-            // 根據距離設定地圖縮放層級 (Zoom Level)
-            // 1km 約 z16, 3km 約 z14, 5km 約 z13, 10km 約 z12
             let zoom = 16;
             if(dist == "3000") zoom = 14;
-            if(dist == "5000") zoom = 13;
-            if(dist == "10000") zoom = 12;
+            if(dist >= "5000") zoom = 13;
 
-            // 組合搜尋關鍵字，明確告訴 Google 距離範圍
-            const queryText = `${spell} ${style} ${price} ${time} 附近 ${parseInt(dist)/1000}公里`;
-            const query = encodeURIComponent(queryText);
-            
-            // 加入時間戳記防止快取
-            const t = new Date().getTime();
-            
-            // 最終搜尋 URL
-            const mapUrl = `https://www.google.com/maps/search/${query}/@${lat},${lng},${zoom}z?t=${t}`;
+            const query = encodeURIComponent(`${spell} ${style} ${price} 附近`);
+            const mapUrl = `https://www.google.com/maps/search/${query}/@${lat},${lng},${zoom}z`;
 
             setTimeout(() => {
-                loader.style.display = 'none';
+                fill.style.width = '100%';
                 window.open(mapUrl, '_blank');
-            }, 600);
+                btn.disabled = false;
+                loader.style.display = 'none';
+                fill.style.width = '0%';
+            }, 300);
+            
         }, (error) => {
+            // 定位失敗則直接使用預設關鍵字搜尋，不讓使用者等
+            const style = document.getElementById('style').value;
+            window.open(`https://www.google.com/maps/search/${encodeURIComponent(style + ' 附近')}`, '_blank');
+            btn.disabled = false;
             loader.style.display = 'none';
-            alert("請開啟定位權限。");
-        }, { enableHighAccuracy: true });
+        }, options);
     }
 </script>
 
