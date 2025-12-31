@@ -44,47 +44,61 @@
         select {
             width: 100%; padding: 10px; border-radius: 15px;
             border: 2px solid #5D4037; background: #fff;
-            font-size: 15px; color: #5D4037; outline: none;
-            appearance: none;
+            font-size: 15px; color: #5D4037; outline: none; appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%235D4037' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
             background-repeat: no-repeat; background-position: right 10px center; background-size: 12px;
         }
 
+        /* 營業中開關樣式 */
+        .switch-group {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #FDF1D6; padding: 10px 15px; border-radius: 20px; margin-bottom: 15px;
+            border: 2px solid #5D4037;
+        }
+        .switch { position: relative; display: inline-block; width: 46px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc; transition: .4s; border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px;
+            background-color: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: var(--accent); }
+        input:checked + .slider:before { transform: translateX(22px); }
+
         .btn {
             width: 100%; padding: 18px; border-radius: 25px;
             border: 2px solid #5D4037; font-size: 18px; font-weight: 900;
-            cursor: pointer; margin-top: 10px; background: var(--sub-accent);
+            cursor: pointer; margin-top: 5px; background: var(--sub-accent);
             color: #5D4037; box-shadow: 0 6px 0 #5D4037; transition: 0.1s;
         }
-
         .btn:active { transform: translateY(4px); box-shadow: 0 2px 0 #5D4037; }
 
-        /* 進度條 */
-        #loader-container { display: none; margin-top: 20px; }
+        #loader-container { display: none; margin-top: 15px; }
         .progress-bar { width: 100%; height: 8px; background: #eee; border-radius: 5px; overflow: hidden; border: 1px solid #5D4037; }
         .progress-fill { width: 0%; height: 100%; background: var(--accent); transition: width 0.2s; }
-        .loading-text { font-size: 11px; margin-top: 5px; font-weight: bold; color: var(--accent); }
     </style>
 </head>
 <body>
 
 <div class="card">
     <div class="icon-header">🥘</div>
-    <h1>美食大冒險</h1>
-    <div class="tag">📍 秒速定位 × 多重因子 × 高隨機</div>
+    <h1>美食探險隊</h1>
+    <div class="tag">📍 秒速定位 × 營業過濾 × 高隨機</div>
 
     <div class="form-grid">
         <div class="form-group">
-            <label>🏃 距離</label>
+            <label>🏃 距離範圍</label>
             <select id="distance">
                 <option value="1000">🚶 1km</option>
                 <option value="3000">🛵 3km</option>
                 <option value="5000">🚗 5km</option>
-                <option value="10000">🏙️ 10km</option>
             </select>
         </div>
         <div class="form-group">
-            <label>💰 預算</label>
+            <label>💰 預算區間</label>
             <select id="price">
                 <option value="便宜">200內</option>
                 <option value="平價">400內</option>
@@ -92,32 +106,39 @@
             </select>
         </div>
         <div class="form-group full-width">
-            <label>😋 想吃什麼？</label>
+            <label>😋 我想吃...</label>
             <select id="style">
-                <option value="台式料理">🇹🇼 台式古早味</option>
-                <option value="日式料理">🇯🇵 日式好滋味</option>
-                <option value="中式料理">🥢 中式大飽口福</option>
-                <option value="美式餐廳">🍔 美式豪邁吃</option>
-                <option value="韓式料理">🇰🇷 韓式歐巴風</option>
-                <option value="義式料理">🍝 義式浪漫感</option>
+                <option value="台式料理">🇹🇼 台式</option>
+                <option value="日式料理">🇯🇵 日式</option>
+                <option value="中式料理">🥢 中式</option>
+                <option value="美式餐廳">🍔 美式</option>
+                <option value="韓式料理">🇰🇷 韓式</option>
                 <option value="便利商店">🏪 超商/輕食</option>
             </select>
         </div>
         <div class="form-group full-width">
             <label>⏰ 用餐時段</label>
             <select id="time">
-                <option value="早餐">早餐時光</option>
+                <option value="早餐">早餐時段</option>
                 <option value="中餐">午餐午休</option>
                 <option value="晚餐">晚餐放鬆</option>
             </select>
         </div>
     </div>
 
+    <div class="switch-group">
+        <span style="font-size: 14px; font-weight: bold; color: #5D4037;">⏰ 只看目前有營業的</span>
+        <label class="switch">
+            <input type="checkbox" id="openNow" checked>
+            <span class="slider"></span>
+        </label>
+    </div>
+
     <button id="searchBtn" class="btn" onclick="searchNow()">幫我挑一個！✨</button>
     
     <div id="loader-container">
         <div class="progress-bar"><div id="p-fill" class="progress-fill"></div></div>
-        <div class="loading-text">正在捕捉時空訊號...</div>
+        <p style="font-size: 11px; margin-top: 5px; color: var(--accent); font-weight: bold;">正在打亂美食排序...</p>
     </div>
 </div>
 
@@ -129,17 +150,12 @@
         
         btn.disabled = true;
         loader.style.display = 'block';
-        fill.style.width = '30%';
+        fill.style.width = '40%';
 
-        // 急速定位設定
-        const options = {
-            enableHighAccuracy: false, // 關閉高精準以換取秒速回應
-            timeout: 2500,             // 只等 2.5 秒
-            maximumAge: 60000          // 優先使用一分鐘內的定位快取
-        };
+        const options = { enableHighAccuracy: false, timeout: 2000, maximumAge: 60000 };
 
         navigator.geolocation.getCurrentPosition((pos) => {
-            fill.style.width = '70%';
+            fill.style.width = '80%';
             const lat = pos.coords.latitude;
             const lng = pos.coords.longitude;
             
@@ -147,27 +163,27 @@
             const style = document.getElementById('style').value;
             const price = document.getElementById('price').value;
             const time = document.getElementById('time').value;
+            const isOpen = document.getElementById('openNow').checked;
 
-            // 高隨機咒語：打亂 Google 的固定推薦
-            const magicSpells = ["推薦", "隱藏版", "人氣", "高評價", "特色", "巷弄", "新發現", "必吃"];
-            const spell = magicSpells[Math.floor(Math.random() * magicSpells.length)];
+            // 高隨機咒語
+            const spells = ["推薦", "隱藏版", "高評價", "巷弄", "驚喜"];
+            const spell = spells[Math.floor(Math.random() * spells.length)];
             
-            // 加入座標微隨機擾動 (約 50 公尺範圍)
-            const rndLat = lat + (Math.random() - 0.5) * 0.001;
-            const rndLng = lng + (Math.random() - 0.5) * 0.001;
+            // 縮放層級：1km 用 16z 讓畫面更精確
+            let zoom = dist == "1000" ? 16 : (dist == "3000" ? 14 : 13);
 
-            // 縮放層級控制
-            let zoom = 16;
-            if(dist == "3000") zoom = 14;
-            if(dist >= "5000") zoom = 13;
-
-            // 組合關鍵字
-            const queryText = `${spell} ${style} ${price} ${time} 附近 ${parseInt(dist)/1000}km`;
+            // 組合搜尋詞：加上「現在營業」字眼加強 Google 判斷
+            let queryText = `${spell} ${style} ${price} ${time}`;
+            if(isOpen) queryText += " 營業中";
+            
             const query = encodeURIComponent(queryText);
             
-            // 加入時間戳記防止連結被瀏覽器記住
+            // 關鍵：加入 lrd=0x0:0x0,1 參數嘗試強制 Google 顯示列表
+            // 加入 open=1 參數 (部分地圖版本支援)
+            const openParam = isOpen ? "&lrd=0x0:0x0,1" : "";
             const t = new Date().getTime();
-            const mapUrl = `https://www.google.com/maps/search/${query}/@${rndLat},${rndLng},${zoom}z?t=${t}`;
+            
+            const mapUrl = `https://www.google.com/maps/search/${query}/@${lat},${lng},${zoom}z?authuser=0&entry=ttu&t=${t}${openParam}`;
 
             setTimeout(() => {
                 fill.style.width = '100%';
@@ -178,10 +194,8 @@
             }, 300);
             
         }, (error) => {
-            // 如果定位超時或失敗，直接搜尋條件區域
             const style = document.getElementById('style').value;
-            const time = document.getElementById('time').value;
-            window.open(`https://www.google.com/maps/search/${encodeURIComponent(style + ' ' + time + ' 附近')}`, '_blank');
+            window.open(`https://www.google.com/maps/search/${encodeURIComponent(style + ' 附近 營業中')}`, '_blank');
             btn.disabled = false;
             loader.style.display = 'none';
         }, options);
