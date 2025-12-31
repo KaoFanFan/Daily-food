@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>今天吃什麼 🍛 (FF)</title>
+    <title>今天吃什麼 🍛</title>
     <style>
         :root {
             --bg-color: #FFF9EB;
@@ -49,7 +49,17 @@
             background-repeat: no-repeat; background-position: right 10px center; background-size: 12px;
         }
 
-        /* 營業中開關樣式 */
+        /* 提示文字樣式 */
+        .notice-text {
+            font-size: 11px;
+            color: #A68A7C;
+            margin-top: -8px;
+            margin-bottom: 15px;
+            text-align: left;
+            padding: 0 8px;
+            line-height: 1.4;
+        }
+
         .switch-group {
             display: flex; justify-content: space-between; align-items: center;
             background: #FDF1D6; padding: 10px 15px; border-radius: 20px; margin-bottom: 15px;
@@ -84,7 +94,7 @@
 <body>
 
 <div class="card">
-    <div class="icon-header">🥘</div>
+    <div class="icon-header">🍲</div>
     <h1>美食探險隊</h1>
     <div class="tag">📍 秒速定位 × 營業過濾 × 高隨機</div>
 
@@ -105,6 +115,13 @@
                 <option value="奢華">400↑</option>
             </select>
         </div>
+    </div>
+    
+    <div class="notice-text">
+        ⚠️ 備註：Google 可能會自動擴大距離半徑 1.5~2 公里以挑選更合適的商家。
+    </div>
+
+    <div class="form-grid">
         <div class="form-group full-width">
             <label>😋 我想吃...</label>
             <select id="style">
@@ -138,7 +155,7 @@
     
     <div id="loader-container">
         <div class="progress-bar"><div id="p-fill" class="progress-fill"></div></div>
-        <p style="font-size: 11px; margin-top: 5px; color: var(--accent); font-weight: bold;">正在打亂美食排序...</p>
+        <p style="font-size: 11px; margin-top: 5px; color: var(--accent); font-weight: bold;">正在重新排列搜尋組合...</p>
     </div>
 </div>
 
@@ -165,25 +182,18 @@
             const time = document.getElementById('time').value;
             const isOpen = document.getElementById('openNow').checked;
 
-            // 高隨機咒語
             const spells = ["推薦", "隱藏版", "高評價", "巷弄", "驚喜"];
             const spell = spells[Math.floor(Math.random() * spells.length)];
             
-            // 縮放層級：1km 用 16z 讓畫面更精確
             let zoom = dist == "1000" ? 16 : (dist == "3000" ? 14 : 13);
-
-            // 組合搜尋詞：加上「現在營業」字眼加強 Google 判斷
             let queryText = `${spell} ${style} ${price} ${time}`;
             if(isOpen) queryText += " 營業中";
             
             const query = encodeURIComponent(queryText);
-            
-            // 關鍵：加入 lrd=0x0:0x0,1 參數嘗試強制 Google 顯示列表
-            // 加入 open=1 參數 (部分地圖版本支援)
             const openParam = isOpen ? "&lrd=0x0:0x0,1" : "";
             const t = new Date().getTime();
             
-            const mapUrl = `https://www.google.com/maps/search/${query}/@${lat},${lng},${zoom}z?authuser=0&entry=ttu&t=${t}${openParam}`;
+            const mapUrl = `https://www.google.com/maps/search/${query}/@${lat},${lng},${zoom}z?t=${t}${openParam}`;
 
             setTimeout(() => {
                 fill.style.width = '100%';
@@ -195,7 +205,7 @@
             
         }, (error) => {
             const style = document.getElementById('style').value;
-            window.open(`https://www.google.com/maps/search/${encodeURIComponent(style + ' 附近 營業中')}`, '_blank');
+            window.open(`https://www.google.com/maps/search/${encodeURIComponent(style + ' 附近 營業中')}`);
             btn.disabled = false;
             loader.style.display = 'none';
         }, options);
